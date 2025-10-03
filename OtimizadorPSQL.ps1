@@ -31,13 +31,32 @@ function Write-Changes {
         [hashtable]$Configurations
     )
 
-    $LogContent = @("Alterações realizadas:")
+    $Timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+    $ComputerName = $env:COMPUTERNAME
+    $UserName = $env:USERNAME
+    
+    $LogHeader = @(
+        "="*80,
+        "[$Timestamp] [INFO] PostgreSQL Optimization Log",
+        "Computer: $ComputerName",
+        "User: $UserName",
+        "Process: PostgreSQL Configuration Optimization",
+        "="*80
+    )
+    
+    $LogContent = @()
+    $LogContent += $LogHeader
+    $LogContent += "[$Timestamp] [INFO] Starting configuration changes..."
+    
     foreach ($Key in $Configurations.Keys) {
-        $LogContent += "$Key = $($Configurations[$Key])"
+        $LogContent += "[$Timestamp] [CONFIG] $Key = $($Configurations[$Key])"
     }
-    $LogContent += "========================"
-
-    $LogContent | Out-File -FilePath $LogPath -Append
+    
+    $LogContent += "[$Timestamp] [INFO] Configuration changes completed successfully"
+    $LogContent += "[$Timestamp] [INFO] Total parameters modified: $($Configurations.Count)"
+    $LogContent += ""
+    
+    $LogContent | Out-File -FilePath $LogPath -Append -Encoding UTF8
     Write-Host "Log atualizado em $LogPath" -ForegroundColor Yellow
 }
 
@@ -249,7 +268,11 @@ function Optimize-PostgreSQL {
 
     $FileContent | Set-Content -Path $ConfigPath
 
-    $LogPath = Join-Path "C:\PostgreSQL_Optimizer\Logs" "log_$Version.txt"
+    $LogFolder = "C:\PostgreSQL_Optimizer\Logs"
+    if (-not (Test-Path $LogFolder)) {
+        New-Item -ItemType Directory -Path $LogFolder -Force | Out-Null
+    }
+    $LogPath = Join-Path $LogFolder "log_$Version.txt"
     Write-Changes -LogPath $LogPath -Configurations $Configurations
 
     Restart-Database -Version $Version
@@ -264,7 +287,7 @@ function Main {
         Clear-Host
         Write-Host "===============================================" -ForegroundColor Cyan
         Write-Host "       BEM-VINDO AO OTIMIZADOR DO POSTGRESQL"    -ForegroundColor Green
-        Write-Host "       DESENVOLVIDO POR NATTEZ"                  -ForegroundColor Green
+        Write-Host "             DESENVOLVIDO POR NATTEZ"            -ForegroundColor Green
         Write-Host "===============================================" -ForegroundColor Cyan
 
         Write-Host "Selecione a opção desejada:" -ForegroundColor Yellow
@@ -336,7 +359,7 @@ function Main {
                 $ContinueLoop = $true
             }
             2 {
-                Apply-Permissions
+                Set-Permissions
                 $MenuResult = Show-EndMenu
                 if (-not $MenuResult) { return }
                 $ContinueLoop = $true
@@ -352,5 +375,3 @@ function Main {
         }
     } while ($ContinueLoop)
 }
-
-Main
