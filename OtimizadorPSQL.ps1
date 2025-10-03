@@ -6,7 +6,7 @@ function Backup-Config {
         [string]$Version
     )
 
-    $BackupFolder = "C:\Program Files (x86)\Alterdata\Logs de Otimização"
+    $BackupFolder = "C:\PostgreSQL_Optimizer\Logs"
     if (-not (Test-Path $BackupFolder)) {
         New-Item -ItemType Directory -Path $BackupFolder | Out-Null
     }
@@ -113,17 +113,12 @@ function Show-EndMenu {
 function Set-Permissions {
     # Pastas para verificar
     $Folders = @(
-        "C:\Program Files\PostgreSQL",
-        "C:\Program Files (x86)\Alterdata"
+        "C:\Program Files\PostgreSQL"
     )
 
     # Chaves de registro para verificar
     $RegistryKeys = @(
-        "HKLM:\SOFTWARE\Alterdata",
-        "HKLM:\SOFTWARE\PostgreSQL",
-        "HKLM:\SOFTWARE\TurboPower",
-        "HKLM:\SOFTWARE\WOW6432Node\ALTERDATA",
-        "HKLM:\SOFTWARE\WOW6432Node\TurboPower"
+        "HKLM:\SOFTWARE\PostgreSQL"
     )
 
     Write-Host "Iniciando verificação e aplicação de permissões..." -ForegroundColor Cyan
@@ -254,7 +249,7 @@ function Optimize-PostgreSQL {
 
     $FileContent | Set-Content -Path $ConfigPath
 
-    $LogPath = Join-Path "C:\Program Files (x86)\Alterdata\Logs de Otimização" "log_$Version.txt"
+    $LogPath = Join-Path "C:\PostgreSQL_Optimizer\Logs" "log_$Version.txt"
     Write-Changes -LogPath $LogPath -Configurations $Configurations
 
     Restart-Database -Version $Version
@@ -268,8 +263,8 @@ function Main {
     do {
         Clear-Host
         Write-Host "===============================================" -ForegroundColor Cyan
-        Write-Host "       BEM-VINDO AO OTIMIZADOR DO POSTGRESQL" -ForegroundColor Green
-        Write-Host "       DESENVOLVIDO POR NATHANBRITO.SUP.PACK" -ForegroundColor Green
+        Write-Host "       BEM-VINDO AO OTIMIZADOR DO POSTGRESQL"    -ForegroundColor Green
+        Write-Host "       DESENVOLVIDO POR NATTEZ"                  -ForegroundColor Green
         Write-Host "===============================================" -ForegroundColor Cyan
 
         Write-Host "Selecione a opção desejada:" -ForegroundColor Yellow
