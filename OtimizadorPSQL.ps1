@@ -375,3 +375,6 @@ function Main {
         }
     } while ($ContinueLoop)
 }
+
+# Executar o programa principal
+Main
