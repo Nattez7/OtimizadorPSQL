@@ -35,28 +35,24 @@ function Write-Changes {
     $ComputerName = $env:COMPUTERNAME
     $UserName = $env:USERNAME
     
-    $LogHeader = @(
-        "="*80,
-        "[$Timestamp] [INFO] PostgreSQL Optimization Log",
-        "Computer: $ComputerName",
-        "User: $UserName",
-        "Process: PostgreSQL Configuration Optimization",
-        "="*80
-    )
+    $Separator = "=" * 80
     
-    $LogContent = @()
-    $LogContent += $LogHeader
-    $LogContent += "[$Timestamp] [INFO] Starting configuration changes..."
+    Add-Content -Path $LogPath -Value $Separator
+    Add-Content -Path $LogPath -Value "[$Timestamp] [INFO] PostgreSQL Optimization Log"
+    Add-Content -Path $LogPath -Value "Computer: $ComputerName"
+    Add-Content -Path $LogPath -Value "User: $UserName"
+    Add-Content -Path $LogPath -Value "Process: PostgreSQL Configuration Optimization"
+    Add-Content -Path $LogPath -Value $Separator
+    Add-Content -Path $LogPath -Value "[$Timestamp] [INFO] Starting configuration changes..."
     
     foreach ($Key in $Configurations.Keys) {
-        $LogContent += "[$Timestamp] [CONFIG] $Key = $($Configurations[$Key])"
+        Add-Content -Path $LogPath -Value "[$Timestamp] [CONFIG] $Key = $($Configurations[$Key])"
     }
     
-    $LogContent += "[$Timestamp] [INFO] Configuration changes completed successfully"
-    $LogContent += "[$Timestamp] [INFO] Total parameters modified: $($Configurations.Count)"
-    $LogContent += ""
+    Add-Content -Path $LogPath -Value "[$Timestamp] [INFO] Configuration changes completed successfully"
+    Add-Content -Path $LogPath -Value "[$Timestamp] [INFO] Total parameters modified: $($Configurations.Count)"
+    Add-Content -Path $LogPath -Value ""
     
-    $LogContent | Out-File -FilePath $LogPath -Append -Encoding UTF8
     Write-Host "Log atualizado em $LogPath" -ForegroundColor Yellow
 }
 
